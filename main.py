@@ -25,3 +25,28 @@ if __name__ == '__main__':
     assert parse('http://example.com/?value1=1&value2=v2&value3=False') == {'value1': '1', 'value2': 'v2', 'value3': 'False'}
     assert parse('http://example.com/?value4=7') == {'value4': '7'}
     assert parse('http://example.com/?name=Jerax') == {'name': 'Jerax'}
+
+
+def parse_cookie(query: str) -> dict:
+    values = query.replace(';', '&')
+    data = dict(urllib_parse.parse_qsl(values))
+    return data
+
+
+if __name__ == '__main__':
+    assert parse_cookie('name=Dima;') == {'name': 'Dima'}
+    assert parse_cookie('') == {}
+    assert parse_cookie('name=Dima;age=28;') == {'name': 'Dima', 'age': '28'}
+    assert parse_cookie('name=Dima=User;age=28;') == {'name': 'Dima=User', 'age': '28'}
+
+    assert parse_cookie('someValue1=value1') == {'someValue1': 'value1'}
+    assert parse_cookie('one=1') == {'one': '1'}
+    assert parse_cookie('boolean=True') == {'boolean': 'True'}
+    assert parse_cookie('name=someName') == {'name': 'someName'}
+    assert parse_cookie('test==') == {'test': '='}
+
+    assert parse_cookie('value1=1') == {'value1': '1'}
+    assert parse_cookie('value1=1;value2=2') == {'value1': '1', 'value2': '2'}
+    assert parse_cookie('value1=1;value2=v2;value3=False') == {'value1': '1', 'value2': 'v2', 'value3': 'False'}
+    assert parse_cookie('value4=7') == {'value4': '7'}
+    assert parse_cookie('name=Jerax') == {'name': 'Jerax'}
